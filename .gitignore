@@ -1,0 +1,30 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Mac OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# User Data & Uploads
+data/raw/uploaded.pdf
+*.rar
+*.zip
+*.tar.gz
+
+# Streamlit Local Config & Secrets
+.streamlit/secrets.toml
+
+# Logs & Temporary Files
+*.log
+.system_generated/
