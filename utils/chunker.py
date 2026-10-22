@@ -10,6 +10,16 @@ def chunk_text(text, chunk_size=300, overlap=50):
     Returns:
         List of chunk strings
     """
+    if not text or not text.strip():
+        return []
+
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive")
+    if overlap < 0:
+        raise ValueError("overlap cannot be negative")
+    if chunk_size <= overlap:
+        raise ValueError("chunk_size must be strictly greater than overlap")
+
     words = text.split()
 
     if not words:

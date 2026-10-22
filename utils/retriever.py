@@ -15,6 +15,9 @@ def create_faiss_index(embeddings):
     Returns:
         faiss.IndexFlatIP index
     """
+    if len(embeddings) == 0:
+        raise ValueError("Cannot create FAISS index from empty embeddings list.")
+
     dimension = embeddings[0].shape[0]
 
     # Inner Product index — correct for normalized BGE embeddings
@@ -43,11 +46,15 @@ def search_similar_chunks(query_embedding, index, top_k=5):
         distances : cosine similarity scores (higher = more similar)
         indices   : positions in the original chunks list
     """
+    if index.ntotal == 0:
+        return np.empty((1, 0), dtype=np.float32), np.empty((1, 0), dtype=np.int64)
+
+    k = min(max(1, top_k), index.ntotal)
     query_vector = np.array([query_embedding]).astype("float32")
 
     # Normalize query for cosine similarity
     faiss.normalize_L2(query_vector)
 
-    distances, indices = index.search(query_vector, top_k)
+    distances, indices = index.search(query_vector, k)
 
     return distances, indices

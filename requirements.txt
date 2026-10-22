@@ -9,3 +9,4 @@ tqdm
 streamlit
 accelerate
 mlx-lm
+pytest>=8.0.0

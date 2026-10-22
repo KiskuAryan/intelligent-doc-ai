@@ -12,11 +12,11 @@ def clean_text(text):
     if not text:
         return ""
 
-    # Remove special model tokens
-    text = re.sub(r'<EOS>|<pad>', ' ', text)
+    # Remove special model tokens and chat template markers
+    text = re.sub(r'<\|[^|]+?\|>|<EOS>|<pad>|<unk>|<bos>', ' ', text, flags=re.IGNORECASE)
 
     # Strip invalid unicode bytes
-    text = text.encode("utf-8", errors="ignore").decode()
+    text = text.encode("utf-8", errors="ignore").decode("utf-8", errors="ignore")
 
     # Remove isolated page numbers (lines that only contain digits)
     text = re.sub(r'^\s*\d+\s*$', '', text, flags=re.MULTILINE)

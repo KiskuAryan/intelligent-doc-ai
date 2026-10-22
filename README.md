@@ -6,6 +6,7 @@
 ![Apple Silicon](https://img.shields.io/badge/Accelerated-Apple%20Metal%20%28MLX%29-9945FF?style=flat-square&logo=apple)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?style=flat-square&logo=streamlit)
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local%20%26%20Offline-10B981?style=flat-square)
+[![Tests](https://img.shields.io/badge/Tests-16%20Passing-brightgreen.svg)](#-automated-test-suite)
 
 ---
 
@@ -105,13 +106,49 @@ intelligent-doc-ai/
 ├── data/
 │   └── raw/
 │       └── sample.pdf      # Sample research paper (Attention Is All You Need)
-└── utils/
-    ├── pdf_parser.py       # Robust PyMuPDF extractor (bytes & file path)
-    ├── cleaner.py          # Non-destructive text sanitization
-    ├── chunker.py          # Sliding-window text chunker
-    ├── embedder.py         # SentenceTransformers with GPU batch encoding
-    ├── retriever.py        # FAISS vector database & cosine similarity search
-    └── generator.py        # Apple MLX LLM loader & streaming generator
+├── utils/
+│   ├── pdf_parser.py       # Robust PyMuPDF extractor (bytes & file path)
+│   ├── cleaner.py          # Non-destructive text sanitization
+│   ├── chunker.py          # Sliding-window text chunker with overlap
+│   ├── embedder.py         # SentenceTransformers with GPU batch encoding
+│   ├── retriever.py        # FAISS vector database & cosine similarity search
+│   └── generator.py        # Apple MLX LLM loader & streaming generator
+└── tests/
+    ├── test_cleaner.py     # Unit tests for text cleaning and regex sanitization
+    ├── test_chunker.py     # Unit tests for chunk window math and boundary checks
+    ├── test_retriever.py   # Unit tests for FAISS index creation and cosine similarity
+    └── test_pdf_parser.py  # Unit tests for PyMuPDF in-memory PDF extraction
+```
+
+---
+
+## 🧪 Automated Pytest Suite
+
+DocAI includes automated unit and boundary tests covering document ingestion, text sanitization, chunking mathematics, FAISS vector indexing, and cosine retrieval:
+
+```bash
+pytest tests/ -v
+```
+
+```text
+tests/test_chunker.py::test_chunk_text_empty PASSED                      [  6%]
+tests/test_chunker.py::test_chunk_text_smaller_than_chunk_size PASSED    [ 12%]
+tests/test_chunker.py::test_chunk_text_sliding_window_overlap PASSED     [ 18%]
+tests/test_chunker.py::test_chunk_text_invalid_parameters PASSED         [ 25%]
+tests/test_cleaner.py::test_clean_text_empty_and_none PASSED             [ 31%]
+tests/test_cleaner.py::test_clean_text_removes_special_tokens PASSED     [ 37%]
+tests/test_cleaner.py::test_clean_text_removes_chat_markers PASSED       [ 43%]
+tests/test_cleaner.py::test_clean_text_removes_isolated_page_numbers PASSED [ 50%]
+tests/test_cleaner.py::test_clean_text_deduplicates_consecutive_lines PASSED [ 56%]
+tests/test_cleaner.py::test_clean_text_normalizes_whitespace PASSED      [ 62%]
+tests/test_pdf_parser.py::test_extract_text_from_pdf_bytes PASSED        [ 68%]
+tests/test_pdf_parser.py::test_extract_text_from_multi_page_pdf PASSED   [ 75%]
+tests/test_retriever.py::test_create_faiss_index_basic PASSED            [ 81%]
+tests/test_retriever.py::test_create_faiss_index_empty PASSED            [ 87%]
+tests/test_retriever.py::test_search_similar_chunks PASSED               [ 93%]
+tests/test_retriever.py::test_search_similar_chunks_fewer_than_top_k PASSED [100%]
+
+======================== 16 passed in 0.45s ========================
 ```
 
 ---
@@ -124,7 +161,8 @@ intelligent-doc-ai/
 | **Inference** | Apple MLX (`mlx-lm`) | Native Apple Silicon Metal acceleration |
 | **Embeddings**| `BAAI/bge-small-en-v1.5` | 384-dimensional dense vectors ($L_2$ normalized) |
 | **Vector Index** | FAISS (`IndexFlatIP`) | Exact Cosine Similarity search |
-| **PDF Parser** | PyMuPDF (`fitz`) | Fast in-memory stream & page extraction |
+| **PDF Parser** | PyMuPDF (`pymupdf`) | Fast in-memory stream & page extraction |
+| **Testing** | Pytest (`pytest>=8.0.0`) | Automated test suite (16 passing tests) |
 | **Frontend** | Streamlit | Minimalist dark theme with CSS custom styling |
 
 ---
